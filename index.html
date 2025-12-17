@@ -27,26 +27,25 @@
       ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
-  <script type="importmap">
+  <script type="module" src="/index.tsx">
 {
   "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "react-leaflet": "https://aistudiocdn.com/react-leaflet@^5.0.0",
-    "leaflet/": "https://aistudiocdn.com/leaflet@^1.9.4/",
     "leaflet": "https://aistudiocdn.com/leaflet@^1.9.4",
-    "@google/genai": "https://esm.run/@google/genai",
     "vite": "https://aistudiocdn.com/vite@^7.2.7",
     "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.2",
     "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.88.0"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <!-- Point d'entrée indispensable pour Vite -->
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>
