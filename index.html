@@ -9,7 +9,7 @@
     <meta name="description" content="Découvrez le parcours Cœur de France à Vélo de Châtillon à Gièvres. Carte interactive, guide touristique et assistant IA." />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json" /> 
+    <link rel="manifest" href="/manifest.json" /> 
     
     <title>Loire à Vélo - SIG Interactif</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,20 +18,18 @@
      crossorigin=""/>
     <style>
       html, body, #root { height: 100%; margin: 0; padding: 0; overflow: hidden; }
-      /* Fix for Leaflet controls z-index in some environments */
       .leaflet-pane { z-index: 10; }
       .leaflet-top, .leaflet-bottom { z-index: 20; }
-      /* Custom scrollbar for sidebar */
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: #f1f1f1; }
       ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
       ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
-<script type="module" src="/index.tsx"></script>
+  
 </head>
   <body class="h-full">
     <div id="root" class="h-full"></div>
-    <!-- Point d'entrée indispensable pour Vite -->
+    <!-- Point d'entrée standard et propre pour Vite -->
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
