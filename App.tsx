@@ -297,10 +297,12 @@ export default function App() {
 
       {/* Main Map Area */}
       <div className="flex-1 h-full relative bg-gray-200">
-        <MapComponent 
-          pois={pois} 
-          onSelectPoi={handlePoiSelect} 
-        />
+       <MapComponent 
+  pois={pois} 
+  onSelectPoi={handlePoiSelect}
+  layoutTrigger={isSidebarOpen}
+/>
+
       </div>
     </div>
   );

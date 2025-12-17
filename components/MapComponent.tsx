@@ -32,19 +32,32 @@ interface MapProps {
 }
 
 // Force Leaflet to recalculate map size (fixes grey areas)
-const MapResizeFix = () => {
+const MapResizeFix = ({ trigger }: { trigger?: any }) => {
   const map = useMap();
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    const invalidate = () => {
       map.invalidateSize();
-    }, 300);
+    };
 
-    return () => clearTimeout(t);
-  }, [map]);
+    // multiple invalidations = robuste
+    invalidate();
+    const t1 = setTimeout(invalidate, 200);
+    const t2 = setTimeout(invalidate, 600);
+
+    // aussi sur resize navigateur
+    window.addEventListener('resize', invalidate);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('resize', invalidate);
+    };
+  }, [map, trigger]);
 
   return null;
 };
+
 
 // Helper to fit bounds
 const MapBoundsInfo = ({ points }: { points: Coordinate[] }) => {
