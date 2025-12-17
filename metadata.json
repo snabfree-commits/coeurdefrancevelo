@@ -1,0 +1,7 @@
+{
+  "name": "Loire à Vélo: Chissay - Angé",
+  "description": "Une application web SIG interactive propulsée par l'IA pour explorer le parcours cyclable de Chissay-en-Touraine à Angé.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
