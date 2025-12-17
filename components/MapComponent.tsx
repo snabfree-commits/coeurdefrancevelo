@@ -32,32 +32,19 @@ interface MapProps {
 }
 
 // Force Leaflet to recalculate map size (fixes grey areas)
-const MapResizeFix = ({ trigger }: { trigger?: any }) => {
+const MapResizeFix = () => {
   const map = useMap();
 
   useEffect(() => {
-    const invalidate = () => {
+    const t = setTimeout(() => {
       map.invalidateSize();
-    };
+    }, 300);
 
-    // multiple invalidations = robuste
-    invalidate();
-    const t1 = setTimeout(invalidate, 200);
-    const t2 = setTimeout(invalidate, 600);
-
-    // aussi sur resize navigateur
-    window.addEventListener('resize', invalidate);
-
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      window.removeEventListener('resize', invalidate);
-    };
-  }, [map, trigger]);
+    return () => clearTimeout(t);
+  }, [map]);
 
   return null;
 };
-
 
 // Helper to fit bounds
 const MapBoundsInfo = ({ points }: { points: Coordinate[] }) => {
@@ -73,7 +60,7 @@ const MapBoundsInfo = ({ points }: { points: Coordinate[] }) => {
   return null;
 };
 
-// Route coordinates
+// Route coordinates (segment Châtillon-sur-Cher → Gièvres uniquement)
 const routeCoordinates: Coordinate[] = [
   { lat: 47.271956, lng: 1.492724 },
   { lat: 47.27222, lng: 1.49465 },
@@ -81,7 +68,30 @@ const routeCoordinates: Coordinate[] = [
   { lat: 47.273174, lng: 1.497042 },
   { lat: 47.273386, lng: 1.497669 },
   { lat: 47.273448, lng: 1.497933 },
-  // … (le reste du tableau reste STRICTEMENT inchangé)
+  { lat: 47.273561, lng: 1.498535 },
+  { lat: 47.273605, lng: 1.499857 },
+  { lat: 47.273688, lng: 1.500821 },
+  { lat: 47.27406, lng: 1.504097 },
+  { lat: 47.274177, lng: 1.504844 },
+  { lat: 47.274461, lng: 1.506524 },
+  { lat: 47.274577, lng: 1.506986 },
+  { lat: 47.275443, lng: 1.509893 },
+  { lat: 47.275605, lng: 1.510503 },
+  { lat: 47.275641, lng: 1.510909 },
+  { lat: 47.275654, lng: 1.511384 },
+  { lat: 47.275589, lng: 1.51191 },
+  { lat: 47.275502, lng: 1.512274 },
+  { lat: 47.275339, lng: 1.512716 },
+  { lat: 47.275133, lng: 1.513095 },
+  { lat: 47.274929, lng: 1.5133 },
+  { lat: 47.274671, lng: 1.513753 },
+  { lat: 47.274616, lng: 1.513969 },
+  { lat: 47.274257, lng: 1.514772 },
+  { lat: 47.274061, lng: 1.516167 },
+  { lat: 47.273813, lng: 1.5196 },
+  { lat: 47.273548, lng: 1.522894 },
+  { lat: 47.273431, lng: 1.523811 },
+  { lat: 47.273287, lng: 1.524511 }
 ];
 
 const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
