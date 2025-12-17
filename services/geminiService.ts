@@ -1,36 +1,48 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import { Poi, RouteInfo } from '../types';
 
 // Initialize Gemini API
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
 export const getRouteDescription = async (start: string, end: string): Promise<RouteInfo> => {
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: `Crée une description touristique JSON pour le parcours cyclable "Cœur de France à Vélo" entre ${start} et ${end}.
-      Inclus : 
-      - Une estimation réaliste de la distance (environ 16-20km)
-      - La durée à vélo
-      - La difficulté
-      - Un texte de description attrayant (2-3 phrases) mentionnant le Canal de Berry et le Cher.
-      - Un tableau vide pour partnerLogos.`,
-      config: {
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [{
+          text: `Crée une description touristique JSON pour le parcours cyclable "Cœur de France à Vélo" entre ${start} et ${end}.
+          Inclus : 
+          - Une estimation réaliste de la distance (environ 16-20km)
+          - La durée à vélo
+          - La difficulté
+          - Un texte de description attrayant (2-3 phrases) mentionnant le Canal de Berry et le Cher.
+          - Un tableau vide pour partnerLogos.`
+        }]
+      }],
+      generationConfig: {
         responseMimeType: 'application/json',
         responseSchema: {
-          type: Type.OBJECT,
+          type: SchemaType.OBJECT,
           properties: {
-            distance: { type: Type.STRING },
-            duration: { type: Type.STRING },
-            difficulty: { type: Type.STRING },
-            description: { type: Type.STRING },
-            partnerLogos: { type: Type.ARRAY, items: { type: Type.STRING } }
-          }
+            distance: { type: SchemaType.STRING },
+            duration: { type: SchemaType.STRING },
+            difficulty: { type: SchemaType.STRING },
+            description: { type: SchemaType.STRING },
+            partnerLogos: { 
+              type: SchemaType.ARRAY, 
+              items: { type: SchemaType.STRING } 
+            }
+          },
+          required: ['distance', 'duration', 'difficulty', 'description', 'partnerLogos']
         }
       }
     });
 
-    const text = response.text;
+    const response = result.response;
+    const text = response.text();
+    
     if (!text) throw new Error("No response from AI");
     
     return JSON.parse(text) as RouteInfo;
@@ -49,12 +61,20 @@ export const getRouteDescription = async (start: string, end: string): Promise<R
 
 export const getPoiDetails = async (poiName: string, type: string, city: string = ""): Promise<string> => {
   try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: `Ecris une courte description touristique et pratique (3-4 phrases maximum) pour le point d'intérêt "${poiName}" de type "${type}" situé à "${city}" sur le parcours Cœur de France à Vélo.
-      Si c'est un producteur (type farm), mentionne les produits du terroir potentiels (fromages, vins, etc).`,
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    
+    const result = await model.generateContent({
+      contents: [{
+        role: 'user',
+        parts: [{
+          text: `Ecris une courte description touristique et pratique (3-4 phrases maximum) pour le point d'intérêt "${poiName}" de type "${type}" situé à "${city}" sur le parcours Cœur de France à Vélo.
+          Si c'est un producteur (type farm), mentionne les produits du terroir potentiels (fromages, vins, etc).`
+        }]
+      }]
     });
-    return response.text || "Aucune description disponible pour le moment.";
+
+    const response = result.response;
+    return response.text() || "Aucune description disponible pour le moment.";
   } catch (error) {
     console.error("Error fetching POI details:", error);
     return "Description non disponible (Hors ligne).";
