@@ -29,7 +29,9 @@ const farmIcon = createIcon('#16a34a');
 interface MapProps {
   pois: Poi[];
   onSelectPoi: (poi: Poi) => void;
+  layoutTrigger?: boolean;
 }
+
 
 // Force Leaflet to recalculate map size (fixes grey areas)
 const MapResizeFix = () => {
@@ -104,7 +106,8 @@ const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
         scrollWheelZoom={true}
         zoomControl={false}
       >
-        <MapResizeFix />
+       <MapResizeFix trigger={layoutTrigger} />
+
 
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
