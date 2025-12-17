@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Poi, Coordinate, RouteInfo } from '../types';
+import { Poi, RouteInfo } from '../types';
 
 interface BackofficeProps {
   pois: Poi[];

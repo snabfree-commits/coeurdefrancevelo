@@ -77,10 +77,10 @@ export default function App() {
         }
 
         // 2. Fetch Route Info
-        const { data: routeData, error } = await supabase
-          .from('route_info')
-          .select('*')
-          .single();
+       const { data: routeData } = await supabase
+  .from('route_info')
+  .select('*')
+  .single();
 
         if (routeData) {
           setRouteInfo({
