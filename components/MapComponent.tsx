@@ -32,18 +32,25 @@ interface MapProps {
   layoutTrigger?: boolean;
 }
 
-
-// Force Leaflet to recalculate map size (fixes grey areas)
-const MapResizeFix = () => {
+// Leaflet resize helper (safe for TypeScript & build)
+const MapResizeFix = ({ trigger }: { trigger?: boolean }) => {
   const map = useMap();
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      map.invalidateSize();
-    }, 300);
+    const invalidate = () => map.invalidateSize();
 
-    return () => clearTimeout(t);
-  }, [map]);
+    invalidate();
+    const t1 = setTimeout(invalidate, 200);
+    const t2 = setTimeout(invalidate, 600);
+
+    window.addEventListener('resize', invalidate);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('resize', invalidate);
+    };
+  }, [map, trigger]);
 
   return null;
 };
@@ -96,7 +103,7 @@ const routeCoordinates: Coordinate[] = [
   { lat: 47.273287, lng: 1.524511 }
 ];
 
-const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
+const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi, layoutTrigger }) => {
   return (
     <div className="h-full w-full relative z-0">
       <MapContainer
@@ -106,8 +113,7 @@ const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
         scrollWheelZoom={true}
         zoomControl={false}
       >
-       <MapResizeFix trigger={layoutTrigger} />
-
+        <MapResizeFix trigger={layoutTrigger} />
 
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -122,15 +128,11 @@ const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
         />
 
         <Marker position={routeCoordinates[0]} icon={startIcon}>
-          <Popup>
-            <strong>Départ</strong>
-          </Popup>
+          <Popup><strong>Départ</strong></Popup>
         </Marker>
 
         <Marker position={routeCoordinates[routeCoordinates.length - 1]} icon={endIcon}>
-          <Popup>
-            <strong>Arrivée</strong>
-          </Popup>
+          <Popup><strong>Arrivée</strong></Popup>
         </Marker>
 
         {pois.map(poi => (
@@ -138,9 +140,7 @@ const MapComponent: React.FC<MapProps> = ({ pois, onSelectPoi }) => {
             key={poi.id}
             position={[poi.position.lat, poi.position.lng]}
             icon={poi.type === 'farm' ? farmIcon : poiIcon}
-            eventHandlers={{
-              click: () => onSelectPoi(poi),
-            }}
+            eventHandlers={{ click: () => onSelectPoi(poi) }}
           />
         ))}
       </MapContainer>
